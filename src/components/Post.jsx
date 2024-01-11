@@ -1,12 +1,13 @@
 import { post, author, text } from "../Styles/Post.module.css";
+import { Link } from "react-router-dom";
 
-const names = ["Lola", "Cuco"];
-
-function Post({ postAuthor, body }) {
+function Post({ id, postAuthor, body }) {
   return (
     <li className={post}>
-      <p className={author}>{postAuthor}</p>
-      <p className={text}>{body}</p>
+      <Link to={id}>
+        <p className={author}>{postAuthor}</p>
+        <p className={text}>{body}</p>
+      </Link>
     </li>
   );
 }

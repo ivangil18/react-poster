@@ -1,43 +1,19 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Form, redirect } from "react-router-dom";
 
 import { form, actions } from "../Styles/NewPost.module.css";
 import Modal from "../components/Modal";
 
-function NewPost({ onNewPost }) {
-  const [postBody, setPostBody] = useState("");
-  const [author, setAuthor] = useState("");
-
-  const navigate = useNavigate();
-
-  function submitHandler(event) {
-    event.preventDefault();
-    const newPost = { author: author, body: postBody };
-    onNewPost(newPost);
-    navigate("..");
-  }
-
+function NewPost() {
   return (
     <Modal>
-      <form className={form} onSubmit={submitHandler}>
+      <Form method="post" className={form}>
         <p>
           <label htmlFor="body">Text</label>
-          <textarea
-            id="body"
-            required
-            value={postBody}
-            onChange={(e) => setPostBody(e.target.value, 1)}
-          />
+          <textarea id="body" required name="body" />
         </p>
         <p>
           <label htmlFor="name">Your name</label>
-          <input
-            type="text"
-            id="name"
-            required
-            value={author}
-            onChange={(e) => setAuthor(e.target.value, 1)}
-          />
+          <input type="text" id="name" required name="author" />
         </p>
         <div className={actions}>
           <Link to=".." type="button">
@@ -45,9 +21,23 @@ function NewPost({ onNewPost }) {
           </Link>
           <button>Submit</button>
         </div>
-      </form>
+      </Form>
     </Modal>
   );
 }
 
 export default NewPost;
+
+export async function action({ request }) {
+  const formData = await request.formData();
+  const postData = Object.fromEntries(formData);
+  await fetch("http://localhost:8080/posts", {
+    method: "POST",
+    body: JSON.stringify(postData),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  return redirect("/");
+}
