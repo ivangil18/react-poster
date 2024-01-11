@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import { posts } from "../Styles/PostList.module.css";
-import Modal from "../components/Modal";
-import NewPost from "../components/NewPost";
 
 import Post from "./Post";
 
-function PostList({ isPosting, onStopPosting }) {
+function PostList() {
   const [postsData, setPostsData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -23,8 +21,6 @@ function PostList({ isPosting, onStopPosting }) {
     async function getPosts() {
       const response = await fetch("http://localhost:8080/posts");
       const data = await response.json();
-      // setPostsData(data);
-      // setPostsData((existingPostData) => [data.posts, ...existingPostData]);
       console.log(data);
       setPostsData(data.posts);
       setIsLoading(false);
@@ -37,11 +33,6 @@ function PostList({ isPosting, onStopPosting }) {
 
   return (
     <>
-      {isPosting && (
-        <Modal onClose={onStopPosting}>
-          <NewPost onNewPost={addPostHandler} onCancel={onStopPosting} />
-        </Modal>
-      )}
       {(postsData.length > 0) & !isLoading ? (
         <ul className={posts}>
           {postsData.map((p) => (
